@@ -1,0 +1,30 @@
+name: Python Syntax Check
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  syntax-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Check Python syntax
+      run: |
+        echo "Checking Python syntax for all .py files..."
+        python -m py_compile $(find . -name "*.py" -not -path "./venv/*" -not -path "./.venv/*") || exit 1
+        echo "✓ All Python files have valid syntax"
+    
+    - name: Display Python version
+      run: python --version
